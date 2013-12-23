@@ -7,7 +7,6 @@
  *
  */
 App::uses('ScheduleSplitter', 'AdvancedShell.Console/Command/Task/Scheduled');
-App::uses('AdvancedTask', 'AdvancedShell.Console/Command/Task');
 
 /**
  * @package AdvancedShell
@@ -25,7 +24,7 @@ class ScheduleSplitByRange extends ScheduleSplitter {
 
 		foreach ($this->_options['Period'] as $Date) {
 			$_arguments = $arguments;
-			$_arguments['--range'] = $Date->format(AdvancedTask::HUMAN_DATE_FORMAT);
+			$_arguments['--range'] = $Date->format(Configure::read('Task.dateFormat'));
 			$splittedArguments->append($this->splitInner($_arguments));
 		}
 
