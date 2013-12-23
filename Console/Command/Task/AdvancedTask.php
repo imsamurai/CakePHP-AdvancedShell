@@ -21,11 +21,6 @@ App::uses('ScheduleNoSplit', 'AdvancedShell.Console/Command/Task/Scheduled');
 class AdvancedTask extends AdvancedShell {
 
 	/**
-	 * Date format
-	 */
-	const HUMAN_DATE_FORMAT = 'd.m.Y';
-
-	/**
 	 * {@inheritdoc}
 	 *
 	 * @var array 
@@ -108,7 +103,7 @@ class AdvancedTask extends AdvancedShell {
 		$parser = parent::getOptionParser();
 		$parser->description('Task global options')
 				->addOption('range', array(
-					'help' => 'Either a date range (separator "-") in format ' . static::HUMAN_DATE_FORMAT
+					'help' => 'Either a date range (separator "-") in format ' . Configure::read('Task.dateFormat')
 				))
 				->addOption('interval', array(
 					'help' => 'Interval in date time format (for ex: 15 minutes, 1 hour, 2 days). Defaults 1 day'
@@ -234,9 +229,9 @@ class AdvancedTask extends AdvancedShell {
 			if (empty($range[1])) {
 				$range[1] = $range[0];
 			}
-			$Start = DateTime::createFromFormat(static::HUMAN_DATE_FORMAT, $range[0]);
+			$Start = DateTime::createFromFormat(Configure::read('Task.dateFormat'), $range[0]);
 			$Start->setTime(00, 00, 00);
-			$End = DateTime::createFromFormat(static::HUMAN_DATE_FORMAT, $range[1]);
+			$End = DateTime::createFromFormat(Configure::read('Task.dateFormat'), $range[1]);
 			$End->setTime(00, 00, 00);
 			$End->modify('+1 day');
 			$Now = new Datetime('now');
