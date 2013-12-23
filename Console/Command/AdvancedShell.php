@@ -78,7 +78,7 @@ class AdvancedShell extends Shell {
 			}
 			return $out;
 		}
-		$$this->statisticsStart('AdvancedShell');
+		$this->statisticsStart('AdvancedShell');
 		$this->out('<info>Task ' . Inflector::camelize($command) . ' started... (' . date('Y.m.d H:i:s') . ')</info>', 2);
 		$this->tasks = array(Inflector::camelize($command));
 		$this->loadTasks();
