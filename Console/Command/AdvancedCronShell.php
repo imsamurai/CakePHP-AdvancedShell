@@ -14,7 +14,7 @@ App::uses('AdvancedShell', 'AdvancedShell.Console/Command');
  * @package AdvancedShell
  * @subpackage Shell
  */
-class CronShell extends AdvancedShell {
+class AdvancedCronShell extends AdvancedShell {
 
 	/**
 	 * List of enabled tasks
