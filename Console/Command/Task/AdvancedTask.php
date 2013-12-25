@@ -130,7 +130,8 @@ class AdvancedTask extends AdvancedShell {
 				))
 				->addOption('debug', array(
 					'help' => 'Sets debug level',
-					'short' => 'd'
+					'short' => 'd',
+					'default' => Configure::read('debug')
 				))
 		;
 		return $parser;
