@@ -28,6 +28,13 @@ class AdvancedShell extends Shell {
 	 * @var array 
 	 */
 	public $uses = array();
+	
+	/**
+	 * Timer
+	 *
+	 * @var array 
+	 */
+	protected $_startTime = array();
 
 	/**
 	 * {@inheritdoc}
