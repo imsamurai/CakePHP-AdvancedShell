@@ -10,10 +10,6 @@ env:
     - REQUIRE=""
     - DB=mysql
     - CAKE_VERSION=2.4
-  matrix:
-    - CAKE_VERSION=2.3
-    - CAKE_VERSION=2.4
-    - CAKE_VERSION=master
 
 matrix:
   include:
