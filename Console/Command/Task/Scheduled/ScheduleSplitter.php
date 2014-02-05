@@ -4,7 +4,6 @@
  * Author: imsamurai <im.samuray@gmail.com>
  * Date: 18.06.2013
  * Time: 23:00:39
-
  */
 
 /**

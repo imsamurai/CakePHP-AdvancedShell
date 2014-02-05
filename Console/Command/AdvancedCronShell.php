@@ -37,10 +37,10 @@ class AdvancedCronShell extends AdvancedShell {
 		$parser = parent::getOptionParser();
 		$parser->description('Cron shell global options');
 
-		foreach ($this->enabledTasks as $task_name) {
-			$parser->addSubcommand(Inflector::underscore($task_name), array(
-				'help' => $this->Tasks->load($task_name)->getOptionParser()->description(),
-				'parser' => $this->Tasks->load($task_name)->getOptionParser()
+		foreach ($this->enabledTasks as $taskName) {
+			$parser->addSubcommand(Inflector::underscore($taskName), array(
+				'help' => $this->Tasks->load($taskName)->getOptionParser()->description(),
+				'parser' => $this->Tasks->load($taskName)->getOptionParser()
 			));
 		}
 		return $parser;

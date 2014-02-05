@@ -55,7 +55,7 @@ class AdvancedTask extends AdvancedShell {
 	 * @return boolean
 	 */
 	public function execute() {
-		Configure::write('debug', (int) Hash::get($this->params, 'debug'));
+		Configure::write('debug', (int)Hash::get($this->params, 'debug'));
 		if ($this->isScheduled()) {
 			if (is_null($this->_ScheduleSplitter) || $this->params['scheduled-no-split']) {
 				$this->_ScheduleSplitter = new ScheduleNoSplit();
@@ -132,8 +132,7 @@ class AdvancedTask extends AdvancedShell {
 					'help' => 'Sets debug level',
 					'short' => 'd',
 					'default' => Configure::read('debug')
-				))
-		;
+				));
 		return $parser;
 	}
 
@@ -160,11 +159,10 @@ class AdvancedTask extends AdvancedShell {
 			}
 			if (is_bool($value) && $value) {
 				$arguments[] = '--' . $name;
-			} else if (!is_bool($value)) {
+			} elseif (!is_bool($value)) {
 				$arguments['--' . $name] = $value;
 			}
 		}
-
 
 		$options = array(
 			'timeout' => $this->params['scheduled-process-timeout'],
@@ -181,15 +179,15 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	protected function _getUsersIds() {
 		if (isset($this->args[0])) {
-			$user_ids = array($this->args[0]);
+			$userIds = array($this->args[0]);
 		} else {
-			$user_ids = $this->User->find('list', array('fields' => array('User.id')));
+			$userIds = $this->User->find('list', array('fields' => array('User.id')));
 			if ($this->allowUnlogged && !$this->params['skip-unlogged']) {
-				array_unshift($user_ids, 0);
+				array_unshift($userIds, 0);
 			}
 		}
 
-		return $user_ids;
+		return $userIds;
 	}
 
 	/**
@@ -217,11 +215,11 @@ class AdvancedTask extends AdvancedShell {
 	 * splitted by $interval
 	 * 
 	 * @param DateTime $Date Start date
-	 * @param string $default_shift Shift date if $Date is null, for ex. "1 day"
+	 * @param string $defaultShift Shift date if $Date is null, for ex. "1 day"
 	 * @param string $interval Interval, for ex. "1 hour"
 	 * @return DatePeriod
 	 */
-	protected function _getPeriod(DateTime $Date = null, $default_shift = '', $interval = null) {
+	protected function _getPeriod(DateTime $Date = null, $defaultShift = '', $interval = null) {
 		if ($Date !== null) {
 			return $this->_getPeriodByDate($Date, $interval);
 		}
@@ -241,7 +239,7 @@ class AdvancedTask extends AdvancedShell {
 			}
 			$Range = new DateRange($Start, $End);
 		} else {
-			$Range = new DateRange('now ' . $default_shift, 'now +1 day ' . $default_shift);
+			$Range = new DateRange('now ' . $defaultShift, 'now +1 day ' . $defaultShift);
 		}
 
 		return $Range->period($this->_getInterval($interval));
@@ -273,7 +271,7 @@ class AdvancedTask extends AdvancedShell {
 	protected function _getInterval($interval) {
 		if ($interval !== null) {
 			return $interval;
-		} else if (!empty($this->params['interval'])) {
+		} elseif (!empty($this->params['interval'])) {
 			return $this->params['interval'];
 		} else {
 			return '1 day';
