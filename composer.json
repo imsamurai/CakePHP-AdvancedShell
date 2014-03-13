@@ -18,7 +18,8 @@
     }
   ],
   "require": {
-    "composer/installers": "*"
+    "composer/installers": "*",
+    "imsamurai/daterange": "1.1.*"
   },
   "support": {
     "email": "im.samuray@gmail.com",

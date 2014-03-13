@@ -224,22 +224,10 @@ class AdvancedTask extends AdvancedShell {
 			return $this->_getPeriodByDate($Date, $interval);
 		}
 		if (!empty($this->params['range'])) {
-			$range = explode('-', $this->params['range']);
-			if (empty($range[1])) {
-				$range[1] = $range[0];
-			}
-			$Start = DateTime::createFromFormat(Configure::read('Task.dateFormat'), $range[0]);
-			$Start->setTime(00, 00, 00);
-			$End = DateTime::createFromFormat(Configure::read('Task.dateFormat'), $range[1]);
-			$End->setTime(00, 00, 00);
-			$End->modify('+1 day');
-			$Now = new Datetime('now');
-			if ($End > $Now) {
-				$End = $Now;
-			}
-			$Range = new DateRange($Start, $End);
+			list($start, $end) = explode('-', $this->params['range']);
+			$Range = new DateRange($start, $end);
 		} else {
-			$Range = new DateRange('now ' . $defaultShift, 'now +1 day ' . $defaultShift);
+			$Range = new DateRange('now ' . $defaultShift, 'now ' . $defaultShift);
 		}
 
 		return $Range->period($this->_getInterval($interval));
@@ -253,10 +241,7 @@ class AdvancedTask extends AdvancedShell {
 	 * @return DatePeriod
 	 */
 	protected function _getPeriodByDate(DateTime $Date, $interval = null) {
-		$Start = clone $Date;
-		$End = clone $Date;
-		$End->modify('+1 day');
-		$Range = new DateRange($Start, $End);
+		$Range = new DateRange(clone $Date);
 
 		return $Range->period($this->_getInterval($interval));
 	}
