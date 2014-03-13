@@ -224,8 +224,8 @@ class AdvancedTask extends AdvancedShell {
 			return $this->_getPeriodByDate($Date, $interval);
 		}
 		if (!empty($this->params['range'])) {
-			list($start, $end) = explode('-', $this->params['range']);
-			$Range = new DateRange($start, $end);
+			$range = explode('-', $this->params['range']);
+			$Range = new DateRange($range[0], empty($range[1]) ? null : $range[1]);
 		} else {
 			$Range = new DateRange('now ' . $defaultShift, 'now ' . $defaultShift);
 		}
