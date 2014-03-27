@@ -23,9 +23,16 @@ class AdvancedCronShell extends AdvancedShell {
 	 */
 	public $enabledTasks = array();
 
+	/**
+	 * {@inheritdoc}
+	 * 
+	 * @param ConsoleOutput $stdout
+	 * @param ConsoleOutput $stderr
+	 * @param ConsoleInput $stdin
+	 */
 	public function __construct($stdout = null, $stderr = null, $stdin = null) {
-		$this->enabledTasks = Configure::read('Console.Cron.enabledTasks');
 		parent::__construct($stdout, $stderr, $stdin);
+		$this->enabledTasks = Hash::normalize((array)Configure::read("Console.{$this->name}.enabledTasks"));
 	}
 
 	/**
@@ -35,12 +42,12 @@ class AdvancedCronShell extends AdvancedShell {
 	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
-		$parser->description('Cron shell global options');
+		$parser->description($this->name . ' shell global options');
 
-		foreach ($this->enabledTasks as $taskName) {
-			$parser->addSubcommand(Inflector::underscore($taskName), array(
-				'help' => $this->Tasks->load($taskName)->getOptionParser()->description(),
-				'parser' => $this->Tasks->load($taskName)->getOptionParser()
+		foreach ($this->enabledTasks as $name => $settings) {
+			$parser->addSubcommand(Inflector::underscore($name), array(
+				'help' => $this->Tasks->load($name, $settings)->getOptionParser()->description(),
+				'parser' => $this->Tasks->load($name, $settings)->getOptionParser()
 			));
 		}
 		return $parser;
