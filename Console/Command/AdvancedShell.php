@@ -77,7 +77,7 @@ class AdvancedShell extends Shell {
 		if (!($command && $command !== 'main' && $command !== 'execute')) {
 			return parent::runCommand($command, $argv);
 		}
-		if (!in_array(Inflector::camelize($command), $this->enabledTasks) && !method_exists($this, $command)) {
+		if (!isset($this->enabledTasks[Inflector::camelize($command)]) && !method_exists($this, $command)) {
 			$this->_welcome();
 			$out = parent::runCommand($command, $argv);
 			if ($out === false) {
