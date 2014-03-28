@@ -245,6 +245,19 @@ class AdvancedTask extends AdvancedShell {
 	 * @return DatePeriod
 	 */
 	protected function _getPeriod(DateTime $Date = null, $defaultShift = '', $interval = null) {
+		return $this->_getRange($Date, $defaultShift, $interval)->period($this->_getInterval($interval));
+	}
+	
+	/**
+	 * Returns DateRange starting from $Date or now with $default_shift
+	 * splitted by $interval
+	 * 
+	 * @param DateTime $Date Start date
+	 * @param string $defaultShift Shift date if $Date is null, for ex. "1 day"
+	 * @param string $interval Interval, for ex. "1 hour"
+	 * @return DatePeriod
+	 */
+	protected function _getRange(DateTime $Date = null, $defaultShift = '', $interval = null) {
 		if ($Date !== null) {
 			return $this->_getPeriodByDate($Date, $interval);
 		}
@@ -255,7 +268,7 @@ class AdvancedTask extends AdvancedShell {
 			$Range = new DateRange('now ' . $defaultShift, 'now ' . $defaultShift);
 		}
 
-		return $Range->period($this->_getInterval($interval));
+		return $Range;
 	}
 
 	/**
