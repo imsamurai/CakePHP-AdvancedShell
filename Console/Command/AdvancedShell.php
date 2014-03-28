@@ -46,12 +46,6 @@ class AdvancedShell extends Shell {
 	}
 
 	/**
-	 * {@inheritdoc}
-	 */
-//	protected function _welcome() {
-//	}
-//	
-	/**
 	 * Displays a header for the shell
 	 */
 	protected function _welcome() {
