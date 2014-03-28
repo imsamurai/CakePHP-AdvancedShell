@@ -52,6 +52,22 @@ class AdvancedTask extends AdvancedShell {
 	/**
 	 * {@inheritdoc}
 	 * 
+	 * @param string $command
+	 * @param array $argv
+	 * @return bool
+	 */
+	public function runCommand($command, $argv) {
+		$this->statisticsStart('AdvancedShell');
+		$out = parent::runCommand($command, $argv);
+		$this->statisticsEnd('AdvancedShell');
+		$this->_sqlDump();
+		$this->hr();
+		return $out;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * 
 	 * @return boolean
 	 */
 	public function execute() {
@@ -64,6 +80,15 @@ class AdvancedTask extends AdvancedShell {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Returns ScheduleSplitter for current task
+	 * 
+	 * @return ScheduleSplitter
+	 */
+	public function getScheduleSplitter() {
+		return new ScheduleNoSplit();
 	}
 
 	/**
@@ -132,7 +157,7 @@ class AdvancedTask extends AdvancedShell {
 					'help' => 'Sets debug level',
 					'short' => 'd',
 					'default' => Configure::read('debug')
-				));
+		));
 		return $parser;
 	}
 

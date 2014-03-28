@@ -43,13 +43,16 @@ class AdvancedShell extends Shell {
 		$this->stdout->styles('b', array('bold' => true));
 		$this->stdout->styles('ok', array('text' => 'green'));
 		$this->stdout->styles('sqlinfo', array('text' => 'black', 'background' => 'white'));
-		if (!$this->command || $this->command === 'main') {
-			$this->_welcome();
-		}
 	}
 
 	/**
 	 * {@inheritdoc}
+	 */
+//	protected function _welcome() {
+//	}
+//	
+	/**
+	 * Displays a header for the shell
 	 */
 	protected function _welcome() {
 		$this->out();
@@ -61,49 +64,10 @@ class AdvancedShell extends Shell {
 	}
 
 	/**
-	 * {@inheritdoc}
-	 * 
-	 * @param string $command
-	 * @param array $argv
-	 * @return void
-	 */
-	public function runCommand($command, $argv) {
-		$this->OptionParser = $this->getOptionParser();
-
-		if (!empty($this->params['help'])) {
-			$this->_welcome();
-			return $this->out($this->OptionParser->help($command));
-		}
-		if (!($command && $command !== 'main' && $command !== 'execute')) {
-			return parent::runCommand($command, $argv);
-		}
-		if (!isset($this->enabledTasks[Inflector::camelize($command)]) && !method_exists($this, $command)) {
-			$this->_welcome();
-			$out = parent::runCommand($command, $argv);
-			if ($out === false) {
-				$this->err('<error>Task "' . $command . '" not found!</error>');
-			}
-			return $out;
-		}
-		$this->statisticsStart('AdvancedShell');
-		$this->out('<info>Task ' . Inflector::camelize($command) . ' started... (' . date('Y.m.d H:i:s') . ')</info>', 2);
-		$this->tasks = array(Inflector::camelize($command));
-		$this->loadTasks();
-		$out = parent::runCommand($command, $argv);
-		$this->out();
-		$this->out('<info>Task ' . Inflector::camelize($command) . ' finished (' . date('Y.m.d H:i:s') . ')</info>');
-		$this->statisticsEnd('AdvancedShell');
-
-		$this->_sqlDump();
-		$this->hr();
-		return $out;
-	}
-
-	/**
 	 * Start statistics
 	 */
 	public function statisticsStart($name) {
-		$this->_startTime[$name] = microtime(true);
+		$this->_startTime[$name] = new DateTime();
 	}
 
 	/**
@@ -111,9 +75,28 @@ class AdvancedShell extends Shell {
 	 */
 	public function statisticsEnd($name) {
 		$this->hr();
-		$this->out('Time: ' . sprintf('%6.3f', (microtime(true) - $this->_startTime[$name])) . 'sec');
-		$this->out('Memory: ' . ((memory_get_peak_usage(true) / (1024 * 1024)) . "Mb max used"));
+		$this->out('Took: ' . $this->_startTime[$name]->diff(new DateTime())->format('%ad %hh %im %ss'));
+		$this->out('Memory: ' . sprintf('%6.3f', memory_get_peak_usage(true) / (1024 * 1024)) . "Mb max used");
 		$this->hr();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * 
+	 * @return ConsoleOptionParser
+	 */
+	public function getOptionParser() {
+		$parser = parent::getOptionParser();
+		$parser->description($this->name . ' shell');
+		$taskNames = array_keys(Hash::normalize($this->tasks));
+		foreach ($taskNames as $taskName) {
+			$Task = $this->{$taskName};
+			$parser->addSubcommand(Inflector::underscore($taskName), array(
+				'help' => $Task->getOptionParser()->description(),
+				'parser' => $Task->getOptionParser()
+			));
+		}
+		return $parser;
 	}
 
 	/**
