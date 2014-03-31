@@ -21,13 +21,6 @@ App::uses('ScheduleNoSplit', 'AdvancedShell.Console/Command/Task/Scheduled');
 class AdvancedTask extends AdvancedShell {
 
 	/**
-	 * {@inheritdoc}
-	 *
-	 * @var array 
-	 */
-	public $uses = array();
-
-	/**
 	 * Current subcommand name (method in task)
 	 *
 	 * @var string
@@ -83,7 +76,7 @@ class AdvancedTask extends AdvancedShell {
 			$out = parent::runCommand($command, $argv);
 		}
 		$this->statisticsEnd('AdvancedShell');
-		$this->_sqlDump();
+		$this->sqlDump();
 		$this->hr();
 		return $out;
 	}
@@ -142,38 +135,41 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
-		$parser->description('Task global options')
-				->addOption('range', array(
+		$parser->addOption('range', array(
 					'help' => 'Either a date range (separator "-") in format ' . Configure::read('Task.dateFormat')
 				))
 				->addOption('interval', array(
 					'help' => 'Interval in date time format (for ex: 15 minutes, 1 hour, 2 days). Defaults 1 day'
-				))
-				->addOption('scheduled', array(
-					'help' => 'If set then script will be run by task daemon',
-					'boolean' => true
-				))
-				->addOption('scheduled-no-split', array(
-					'help' => 'If set then script will not be splitten by arguments',
-					'boolean' => true
-				))
-				->addOption('scheduled-process-timeout', array(
-					'help' => 'Sets task process timeout',
-					'default' => Configure::read('Task.timeout')
-				))
-				->addOption('scheduled-depends-on', array(
-					'help' => 'Tasks ids that must be done before current task can start. Format: coma separated',
-				))
-				->addOption('scheduled-wait-prev', array(
-					'help' => 'If `yes` each task will wait for previous task, else each task will run independenly. 
-						See `$_scheduleNextTaskDependsOnPrevious` for script defaults that used when this parameter 
-						was omitted.',
 				))
 				->addOption('debug', array(
 					'help' => 'Sets debug level',
 					'short' => 'd',
 					'default' => Configure::read('debug')
 		));
+		if (CakePlugin::loaded('Task')) {
+			$parser->addOption('scheduled', array(
+						'help' => 'If set then script will be run by task daemon',
+						'boolean' => true
+					))
+					->addOption('scheduled-no-split', array(
+						'help' => 'If set then script will not be splitten by arguments',
+						'boolean' => true
+					))
+					->addOption('scheduled-process-timeout', array(
+						'help' => 'Sets task process timeout',
+						'default' => Configure::read('Task.timeout')
+					))
+					->addOption('scheduled-depends-on', array(
+						'help' => 'Tasks ids that must be done before current task can start. Format: coma separated',
+					))
+					->addOption('scheduled-wait-prev', array(
+						'help' => 'If `yes` each task will wait for previous task, else each task will run independenly. 
+						See `$_scheduleNextTaskDependsOnPrevious` for script defaults that used when this parameter 
+						was omitted.',
+			));
+		} else {
+			$parser->epilog($parser->epilog() . "\n" . 'For using `scheduled` install and enable Task plugin https://github.com/imsamurai/cakephp-task-plugin');
+		}
 		return $parser;
 	}
 
@@ -239,9 +235,6 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	protected function _schedule($command, $path, array $arguments, array $options) {
 		$TaskClient = ClassRegistry::init('Task.TaskClient');
-		if (!$TaskClient) {
-			throw new Exception('You must install Task plugin https://github.com/imsamurai/cakephp-task-plugin');
-		}
 		$task = $TaskClient->add($command, $path, $arguments, $options);
 		if ($task) {
 			$waitFor = empty($options['dependsOn']) ? 'none' : implode(', ', $options['dependsOn']) . ' task(s)';

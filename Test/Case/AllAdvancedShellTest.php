@@ -19,11 +19,8 @@ class AllAdvancedShellTest extends PHPUnit_Framework_TestSuite {
 	 */
 	public static function suite() {
 		$suite = new CakeTestSuite('All AdvancedShell Tests');
-		/*
-		  $basePath = App::pluginPath('AdvancedShell') . 'Test' . DS . 'Case' . DS;
-		  $suite->addTestDirectoryRecursive($basePath);
-		 */
-		debug('Need to write tests!');
+		$basePath = App::pluginPath('AdvancedShell') . 'Test' . DS . 'Case' . DS;
+		$suite->addTestDirectoryRecursive($basePath);
 		return $suite;
 	}
 

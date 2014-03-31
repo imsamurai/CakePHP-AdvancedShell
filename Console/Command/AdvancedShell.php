@@ -7,6 +7,8 @@
  * Format: http://book.cakephp.org/2.0/en/console-and-shells.html#creating-a-shell
  */
 
+App::uses('Shell', 'Console');
+
 /**
  * Advanced shell with sqldump and statistics
  * 
@@ -46,12 +48,6 @@ class AdvancedShell extends Shell {
 	}
 
 	/**
-	 * {@inheritdoc}
-	 */
-//	protected function _welcome() {
-//	}
-//	
-	/**
 	 * Displays a header for the shell
 	 */
 	protected function _welcome() {
@@ -76,7 +72,7 @@ class AdvancedShell extends Shell {
 	public function statisticsEnd($name) {
 		$this->hr();
 		$this->out('Took: ' . $this->_startTime[$name]->diff(new DateTime())->format('%ad %hh %im %ss'));
-		$this->out('Memory: ' . sprintf('%6.3f', memory_get_peak_usage(true) / (1024 * 1024)) . "Mb max used");
+		$this->out('Memory: ' . sprintf('%0.3f', memory_get_peak_usage(true) / (1024 * 1024)) . "Mb max used");
 		$this->hr();
 	}
 
@@ -87,11 +83,11 @@ class AdvancedShell extends Shell {
 	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
-		$parser->description($this->name . ' shell');
+		$parser->description('There is no help');
 		$taskNames = array_keys(Hash::normalize($this->tasks));
 		foreach ($taskNames as $taskName) {
 			$Task = $this->{$taskName};
-			$parser->addSubcommand(Inflector::underscore($taskName), array(
+			$parser->addSubcommand(Inflector::underscore($Task->name), array(
 				'help' => $Task->getOptionParser()->description(),
 				'parser' => $Task->getOptionParser()
 			));
@@ -101,8 +97,11 @@ class AdvancedShell extends Shell {
 
 	/**
 	 * Shows sql dump
+	 * 
+	 * @param bool $sorted Get the queries sorted by time taken, defaults to false.
+	 * @param bool $clear If True the existing log will cleared.
 	 */
-	protected function _sqlDump() {
+	public function sqlDump($sorted = false, $clear = true) {
 		if (!class_exists('ConnectionManager') || Configure::read('debug') < 2) {
 			return;
 		}
@@ -114,7 +113,7 @@ class AdvancedShell extends Shell {
 			if (!method_exists($db, 'getLog')) {
 				continue;
 			}
-			$logs[$source] = $db->getLog();
+			$logs[$source] = $db->getLog($sorted, $clear);
 		}
 
 		if (empty($logs)) {
