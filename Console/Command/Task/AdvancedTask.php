@@ -28,14 +28,14 @@ class AdvancedTask extends AdvancedShell {
 	public $uses = array();
 
 	/**
-	 * Splits script arguments for multitasking
+	 * Current subcommand name (method in task)
 	 *
-	 * @var ScheduleSplitter
+	 * @var string
 	 */
-	protected $_ScheduleSplitter = null;
+	public $action = null;
 
 	/**
-	 * If true newt task will wait for previous.
+	 * If true newx task will wait for previous.
 	 * First task don't wait anyone
 	 *
 	 * @var bool
@@ -43,11 +43,18 @@ class AdvancedTask extends AdvancedShell {
 	protected $_scheduleNextTaskDependsOnPrevious = true;
 
 	/**
-	 * Allow unlogged users or not when user id is not specified
+	 * Class for splitting one task into many by arguments
 	 *
-	 * @var bool
+	 * @var ScheduleSplitter
 	 */
-	public $allowUnlogged = true;
+	protected $_ScheduleSplitter = null;
+
+	/**
+	 * Execute command
+	 */
+	public function execute() {
+		
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -57,29 +64,28 @@ class AdvancedTask extends AdvancedShell {
 	 * @return bool
 	 */
 	public function runCommand($command, $argv) {
+		if (!empty($this->args[0]) && $this->hasMethod($this->args[0])) {
+			$this->action = $this->args[0];
+		} else {
+			$this->action = null;
+		}
 		$this->statisticsStart('AdvancedShell');
-		$out = parent::runCommand($command, $argv);
+		Configure::write('debug', (int)Hash::get($this->params, 'debug'));
+		if ($this->isScheduled()) {
+			if ($this->params['scheduled-no-split']) {
+				$this->setScheduleSplitter(new ScheduleNoSplit());
+			}
+			$this->schedule();
+			$out = null;
+		} elseif ($this->action) {
+			$out = $this->{$this->action}();
+		} else {
+			$out = parent::runCommand($command, $argv);
+		}
 		$this->statisticsEnd('AdvancedShell');
 		$this->_sqlDump();
 		$this->hr();
 		return $out;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 * 
-	 * @return boolean
-	 */
-	public function execute() {
-		Configure::write('debug', (int)Hash::get($this->params, 'debug'));
-		if ($this->isScheduled()) {
-			if (is_null($this->_ScheduleSplitter) || $this->params['scheduled-no-split']) {
-				$this->_ScheduleSplitter = new ScheduleNoSplit();
-			}
-			$this->schedule();
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -89,6 +95,15 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	public function getScheduleSplitter() {
 		return new ScheduleNoSplit();
+	}
+
+	/**
+	 * Set ScheduleSplitter for current task
+	 * 
+	 * @param ScheduleSplitter $Splitter
+	 */
+	public function setScheduleSplitter(ScheduleSplitter $Splitter) {
+		$this->_ScheduleSplitter = $Splitter;
 	}
 
 	/**
@@ -102,6 +117,7 @@ class AdvancedTask extends AdvancedShell {
 
 	/**
 	 * Adds script to sceduler
+	 * (for ex by date range)
 	 */
 	public function schedule() {
 		if (!empty($this->params['scheduled-wait-prev'])) {
@@ -109,7 +125,7 @@ class AdvancedTask extends AdvancedShell {
 		}
 		list($command, $path, $arguments, $options) = $this->_scheduleVars();
 		$lastTaskId = null;
-		foreach ($this->_ScheduleSplitter->split($arguments) as $_arguments) {
+		foreach ($this->getScheduleSplitter()->split($arguments) as $_arguments) {
 			$_options = $options;
 			if ($this->_scheduleNextTaskDependsOnPrevious && !is_null($lastTaskId)) {
 				$_options['dependsOn'][] = $lastTaskId;
@@ -169,8 +185,24 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	protected function _scheduleVars() {
 		global $argv;
-		$command = 'Console/cake cron ' . Inflector::underscore($this->name);
 		$path = $argv[2] . DS;
+		$shellName = $argv[3];
+		$taskName = $argv[4];
+
+		if (isset($this->args[0]) && $this->hasMethod($this->args[0])) {
+			$methodName = $this->args[0];
+			array_shift($this->args);
+		} else {
+			$methodName = null;
+		}
+
+		$command = implode(' ', array_filter(array(
+			'Console/cake',
+			$shellName,
+			$taskName,
+			$methodName
+		)));
+
 		$arguments = $this->args;
 		foreach ($this->params as $name => $value) {
 			if (in_array($name, array(
@@ -198,24 +230,6 @@ class AdvancedTask extends AdvancedShell {
 	}
 
 	/**
-	 * Returns valid user id's
-	 *
-	 * @return array
-	 */
-	protected function _getUsersIds() {
-		if (isset($this->args[0])) {
-			$userIds = array($this->args[0]);
-		} else {
-			$userIds = $this->User->find('list', array('fields' => array('User.id')));
-			if ($this->allowUnlogged && !$this->params['skip-unlogged']) {
-				array_unshift($userIds, 0);
-			}
-		}
-
-		return $userIds;
-	}
-
-	/**
 	 * Adds script to sceduler
 	 *
 	 * @param string $command
@@ -225,6 +239,9 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	protected function _schedule($command, $path, array $arguments, array $options) {
 		$TaskClient = ClassRegistry::init('Task.TaskClient');
+		if (!$TaskClient) {
+			throw new Exception('You must install Task plugin https://github.com/imsamurai/cakephp-task-plugin');
+		}
 		$task = $TaskClient->add($command, $path, $arguments, $options);
 		if ($task) {
 			$waitFor = empty($options['dependsOn']) ? 'none' : implode(', ', $options['dependsOn']) . ' task(s)';
@@ -247,7 +264,7 @@ class AdvancedTask extends AdvancedShell {
 	protected function _getPeriod(DateTime $Date = null, $defaultShift = '', $interval = null) {
 		return $this->_getRange($Date, $defaultShift, $interval)->period($this->_getInterval($interval));
 	}
-	
+
 	/**
 	 * Returns DateRange starting from $Date or now with $default_shift
 	 * splitted by $interval
@@ -280,7 +297,6 @@ class AdvancedTask extends AdvancedShell {
 	 */
 	protected function _getPeriodByDate(DateTime $Date, $interval = null) {
 		$Range = new DateRange(clone $Date);
-
 		return $Range->period($this->_getInterval($interval));
 	}
 
