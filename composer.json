@@ -1,32 +1,35 @@
 {
-  "name": "imsamurai/cakephp-advancedshell",
-  "description": "Advanced feutures for cakePHP shell",
-  "type": "cakephp-plugin",
-  "keywords": [
-    "cakephp",
-    "console",
-    "plugin"
-  ],
-  "homepage": "http://github.com/imsamurai/CakePHP-AdvancedShell",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Shamray Alexander",
-      "email": "im.samuray@gmail.com",
-      "homepage": "https://imsamurai.me",
-      "role": "Maintainer"
-    }
-  ],
-  "require": {
-    "composer/installers": "*",
-    "imsamurai/daterange": "1.1.*"
-  },
-  "support": {
-    "email": "im.samuray@gmail.com",
-    "issues": "https://github.com/imsamurai/CakePHP-AdvancedShell/issues",
-    "source": "https://github.com/imsamurai/CakePHP-AdvancedShell"
-  },
-  "extra": {
-    "installer-name": "AdvancedShell"
-  }
+	"name": "imsamurai/cakephp-advancedshell",
+	"description": "Advanced feutures for cakePHP shell",
+	"type": "cakephp-plugin",
+	"keywords": [
+		"cakephp",
+		"console",
+		"plugin"
+	],
+	"homepage": "http://github.com/imsamurai/CakePHP-AdvancedShell",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Shamray Alexander",
+			"email": "im.samuray@gmail.com",
+			"homepage": "https://imsamurai.me",
+			"role": "Maintainer"
+		}
+	],
+	"require": {
+		"composer/installers": "*",
+		"imsamurai/daterange": "1.1.*"
+	},
+	"suggest": {
+		"imsamurai/cakephp-task-plugin": "Install it if you want to use scheduled tasks"
+	},
+	"support": {
+		"email": "im.samuray@gmail.com",
+		"issues": "https://github.com/imsamurai/CakePHP-AdvancedShell/issues",
+		"source": "https://github.com/imsamurai/CakePHP-AdvancedShell"
+	},
+	"extra": {
+		"installer-name": "AdvancedShell"
+	}
 }
