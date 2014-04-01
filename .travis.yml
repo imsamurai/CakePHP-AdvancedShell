@@ -1,12 +1,21 @@
 language: php
 
+php:
+  - 5.4
+  - 5.5
+  - hhvm
+
 env:
   global:
     - PLUGIN_NAME=AdvancedShell
     - PLUGIN_PATH=Plugin/AdvancedShell
-    - REQUIRE=""
+    - REQUIRE="phpunit/phpunit:3.7.31"
     - DB=mysql
     - CAKE_VERSION=2.4
+  matrix:
+    - CAKE_VERSION=2.3
+    - CAKE_VERSION=2.4
+    - CAKE_VERSION=master
 
 matrix:
   include:
@@ -25,6 +34,7 @@ before_script:
   - ../travis/before_script.sh
   - if [ "$PHPCS" != 1 ]; then
         echo "
+            require_once APP . DS . 'vendor' . DS . 'phpunit' . DS . 'phpunit' . DS . 'PHPUnit' . DS . 'Autoload.php';
             CakePlugin::load('AdvancedShell', array('bootstrap' => true, 'routes' => false));
         " >> ../cakephp/app/Config/bootstrap.php;
     fi
