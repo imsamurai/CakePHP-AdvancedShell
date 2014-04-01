@@ -37,9 +37,12 @@ class AdvancedShellTest extends CakeTestCase {
 		$Output = $this->getMock('ConsoleOutput', array(
 			'_write'
 		));
-		$Output->expects($this->any())->method('_write')->will($this->returnCallback(function($out) {
-					$this->out .= $out;
-				}));
+		$Output->expects($this->any())
+				->method('_write')
+				->will($this->returnCallback(function($out) {
+							$this->out .= $out;
+						})
+		);
 
 		$Input = $this->getMock('ConsoleInput', array(), array(), '', false);
 

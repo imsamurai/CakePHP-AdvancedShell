@@ -46,7 +46,6 @@ class AdvancedTask extends AdvancedShell {
 	 * Execute command
 	 */
 	public function execute() {
-		
 	}
 
 	/**
