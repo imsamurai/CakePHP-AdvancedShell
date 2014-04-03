@@ -83,7 +83,7 @@ class AdvancedShellTest extends CakeTestCase {
 
 		$this->assertSame($dumpVisible, !empty($this->out));
 		if ($dumpVisible) {
-			$this->assertRegExp('/SELECT .* \<sqlinfo\>{e:, a:0, t:0, n:0}\<\/sqlinfo\>/i', $this->out);
+			$this->assertRegExp('/SELECT .* \<sqlinfo\>{e:, a:0, t:\d+, n:0}\<\/sqlinfo\>/i', $this->out);
 		}
 	}
 
