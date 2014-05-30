@@ -19,7 +19,7 @@
 	],
 	"require": {
 		"composer/installers": "*",
-		"imsamurai/daterange": "1.1.*"
+		"imsamurai/daterange": "1.2.*"
 	},
 	"suggest": {
 		"imsamurai/cakephp-task-plugin": "Install it if you want to use scheduled tasks"
