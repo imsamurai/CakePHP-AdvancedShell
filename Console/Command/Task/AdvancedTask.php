@@ -75,7 +75,7 @@ class AdvancedTask extends AdvancedShell {
 			$out = parent::runCommand($command, $argv);
 		}
 		$this->statisticsEnd('AdvancedShell');
-		$this->sqlDump();
+		$this->sqlDump(false, false);
 		$this->hr();
 		return $out;
 	}
