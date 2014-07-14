@@ -35,5 +35,5 @@ class CacheShell extends AdvancedShell {
 		$parser = parent::getOptionParser();
 		return $parser->description('Manage cache');
 	}
-
+	
 }
