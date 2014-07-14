@@ -28,7 +28,37 @@ class CacheClearTask extends AdvancedTask {
 	 */
 	public function execute() {
 		parent::execute();
-		$cacheNames = $this->args[0];
+		if ($this->params['views']) {
+			$this->_clearViews();
+		} else {
+			$this->_clearCache();
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @var ConsoleOptionParser 
+	 */
+	public function getOptionParser() {
+		$parser = parent::getOptionParser();
+		$parser->addArgument('name(s)', array(
+			'required' => true,
+			'help' => 'Enter one or more cache/view names separated by comma or "all"' .
+			"\n<comment>(choises: " . implode(',', array_merge(Cache::configured(), array('all'))) . ")</comment>"
+		));
+		$parser->addOption('views', array(
+			'boolean' => true,
+			'help' => 'If set views files will be deleted' .
+			"\n<comment>(choises: " . implode(',', array('view_file_name*', 'all')) . ")</comment>"
+		));
+		return $parser->description('Clear cache');
+	}
+
+	/**
+	 * Clear cache
+	 */
+	protected function _clearCache() {
 		if ($this->args[0] === 'all') {
 			$cacheNames = Cache::configured();
 		} else {
@@ -45,18 +75,29 @@ class CacheClearTask extends AdvancedTask {
 	}
 
 	/**
-	 * {@inheritdoc}
-	 *
-	 * @var ConsoleOptionParser 
+	 * Clear views
 	 */
-	public function getOptionParser() {
-		$parser = parent::getOptionParser();
-		$parser->addArgument('name(s)', array(
-			'required' => true,
-			'help' => 'Enter one or more cache names separated by comma or "all"' .
-			"\n<comment>(choises: " . implode(',', array_merge(Cache::configured(), array('all'))) . ")</comment>"
-		));
-		return $parser->description('Clear cache');
+	protected function _clearViews() {
+		if ($this->args[0] === 'all') {
+			$patterns = array('*');
+		} else {
+			$patterns = array_map('trim', explode(',', $this->args[0]));
+		}
+
+		foreach ($patterns as $pattern) {
+			$files = glob(TMP . 'cache' . DS . 'views' . DS . basename($pattern));
+			foreach ($files as $file) {
+				if (!is_file($file)) {
+					continue;
+				}
+
+				if (unlink($file)) {
+					$this->out("View: $file deleted");
+				} else {
+					$this->err("View: $file NOT deleted!");
+				}
+			}
+		}
 	}
 
 }

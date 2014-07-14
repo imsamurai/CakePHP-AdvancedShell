@@ -47,6 +47,30 @@ class CacheShellTest extends CakeTestCase {
 	/**
 	 * Test cache clear task
 	 * 
+	 * @param string $viewNames
+	 * 
+	 * @dataProvider clearProvider
+	 */
+	public function testClearViews($viewNames) {
+		$views = array_map('trim', explode(',', $viewNames));
+		$filePath = TMP . 'cache' . DS . 'views' . DS;
+		foreach ($views as $view) {
+			file_put_contents($filePath . $view, $view);
+			$this->assertTrue(file_exists($filePath . $view));
+		}
+		$this->Shell->startup();
+		$this->Shell->initialize();
+		$this->Shell->runCommand('clear', array('clear', $viewNames, '--views'));
+
+		foreach ($views as $view) {
+			$this->assertFalse(file_exists($filePath . $view));
+		}
+		debug($this->out);
+	}
+
+	/**
+	 * Test cache clear task
+	 * 
 	 * @param string $cacheNames
 	 * 
 	 * @dataProvider clearProvider
