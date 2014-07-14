@@ -11,9 +11,8 @@ env:
     - PLUGIN_PATH=Plugin/AdvancedShell
     - REQUIRE="phpunit/phpunit:4.1.*"
     - DB=mysql
-    - CAKE_VERSION=2.4
+    - CAKE_VERSION=2.5
   matrix:
-    - CAKE_VERSION=2.3
     - CAKE_VERSION=2.4
     - CAKE_VERSION=2.5
 
