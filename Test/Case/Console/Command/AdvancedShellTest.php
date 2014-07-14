@@ -83,7 +83,8 @@ class AdvancedShellTest extends CakeTestCase {
 
 		$this->assertSame($dumpVisible, !empty($this->out));
 		if ($dumpVisible) {
-			$this->assertTrue((bool)preg_match('/SELECT .* \<sqlinfo\>{e:, a:0, t:\d+, n:0}\<\/sqlinfo\>/i', $this->out));
+			$out = ereg_replace('[:cntrl:]', '', (string)$this->out);
+			$this->assertTrue((bool)preg_match('/SELECT .* \<sqlinfo\>{e:, a:0, t:\d+, n:0}\<\/sqlinfo\>/i', $out));
 		}
 	}
 
