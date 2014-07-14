@@ -63,11 +63,12 @@ class CacheShellTest extends CakeTestCase {
 		}
 		$this->Shell->startup();
 		$this->Shell->initialize();
-		$this->Shell->runCommand('clear', array('execute', $cacheNames));
+		$this->Shell->runCommand('clear', array('clear', $cacheNames));
 
 		foreach ($caches as $cache) {
 			$this->assertFalse(Cache::read($cacheKey, $cache));
 		}
+		debug($this->out);
 	}
 
 	/**
