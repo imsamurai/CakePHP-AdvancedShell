@@ -104,7 +104,7 @@ class AdvancedTask extends AdvancedShell {
 	 * @return bool
 	 */
 	public function isScheduled() {
-		return $this->params['scheduled'];
+		return !empty($this->params['scheduled']);
 	}
 
 	/**
