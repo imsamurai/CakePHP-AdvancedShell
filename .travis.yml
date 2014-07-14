@@ -35,7 +35,6 @@ before_script:
   - if [ "$PHPCS" != 1 ]; then
         ./fix_vendors.sh;
         echo "
-            require_once APP . DS . 'vendor' . DS . 'phpunit' . DS . 'phpunit' . DS . 'PHPUnit' . DS . 'Autoload.php';
             CakePlugin::load('AdvancedShell', array('bootstrap' => true, 'routes' => false));
         " >> ../cakephp/app/Config/bootstrap.php;
     fi
