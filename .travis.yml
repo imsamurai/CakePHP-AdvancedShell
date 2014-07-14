@@ -9,13 +9,13 @@ env:
   global:
     - PLUGIN_NAME=AdvancedShell
     - PLUGIN_PATH=Plugin/AdvancedShell
-    - REQUIRE="phpunit/phpunit:3.7.31"
+    - REQUIRE="phpunit/phpunit:4.1.*"
     - DB=mysql
     - CAKE_VERSION=2.4
   matrix:
     - CAKE_VERSION=2.3
     - CAKE_VERSION=2.4
-    - CAKE_VERSION=master
+    - CAKE_VERSION=2.5
 
 matrix:
   include:
