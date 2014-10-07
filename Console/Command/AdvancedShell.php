@@ -61,6 +61,8 @@ class AdvancedShell extends Shell {
 
 	/**
 	 * Start statistics
+	 * 
+	 * @param string $name
 	 */
 	public function statisticsStart($name) {
 		$this->_startTime[$name] = new DateTime();
@@ -68,6 +70,8 @@ class AdvancedShell extends Shell {
 
 	/**
 	 * Stop and output statistics
+	 * 
+	 * @param string $name
 	 */
 	public function statisticsEnd($name) {
 		$this->hr();

@@ -6,6 +6,10 @@
  * Time: 16:10:05
  * Format: http://book.cakephp.org/2.0/en/development/testing.html
  */
+
+/**
+ * Require test tasks
+ */
 require_once dirname(__FILE__) . DS . 'tasks.php';
 App::uses('ShellDispatcher', 'Console');
 App::uses('ConsoleOutput', 'Console');

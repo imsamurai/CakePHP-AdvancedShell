@@ -9,6 +9,8 @@
 App::uses('ScheduleSplitter', 'AdvancedShell.Console/Command/Task/Scheduled');
 
 /**
+ * Noop splitter
+ * 
  * @package AdvancedShell
  * @subpackage Scheduled
  */

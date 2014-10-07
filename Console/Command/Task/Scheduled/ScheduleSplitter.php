@@ -7,6 +7,8 @@
  */
 
 /**
+ * Schedule Splitter
+ * 
  * @package AdvancedShell
  * @subpackage Scheduled
  */

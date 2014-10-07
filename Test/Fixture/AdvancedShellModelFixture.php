@@ -1,14 +1,25 @@
 <?php
 
 /**
+ * Author: imsamurai <im.samuray@gmail.com>
+ * Date: Dec 23, 2013
+ * Time: 9:55:10 PM
+ */
+
+/**
  * AdvancedShellModel Fixture
  */
 class AdvancedShellModelFixture extends CakeTestFixture {
 
+	/**
+	 * {@inheritdoc}
+	 *
+	 * @var string 
+	 */
 	public $useDbConfig = 'test';
 
 	/**
-	 * Fields
+	 * {@inheritdoc}
 	 *
 	 * @var array
 	 */
@@ -18,7 +29,7 @@ class AdvancedShellModelFixture extends CakeTestFixture {
 	);
 
 	/**
-	 * Records
+	 * {@inheritdoc}
 	 *
 	 * @var array
 	 */
