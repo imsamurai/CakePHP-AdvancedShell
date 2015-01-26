@@ -31,11 +31,34 @@ matrix:
     - php: 5.5
       env:
         - PHPDOC=1
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.5.0
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.4.2
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.3.3
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.2.0
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.1.0
+    
 
 before_script:
   - git clone git://github.com/imsamurai/travis-plugin-build.git --depth 1 travis
   - chmod +x ./travis/*
   - ./travis/before_script.sh
+  - if [ "" != "$HHVM_VERSION" ]; then
+      wget http://dl.hhvm.com/ubuntu/pool/main/h/hhvm/hhvm_$HHVM_VERSION~precise_amd64.deb;
+      sudo apt-get update;
+      sudo apt-get install libstdc++6;
+      sudo dpkg -i hhvm_$HHVM_VERSION~precise_amd64.deb;
+    fi;
+  - php --version
 
 script:
   - ./travis/script.sh
