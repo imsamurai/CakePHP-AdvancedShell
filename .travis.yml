@@ -39,7 +39,22 @@ matrix:
         - HHVM_VERSION=3.4.2
     - php: hhvm
       env:
+        - HHVM_VERSION=3.4.0
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.4.1
+    - php: hhvm
+      env:
         - HHVM_VERSION=3.3.3
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.3.2
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.3.1
+    - php: hhvm
+      env:
+        - HHVM_VERSION=3.3.0
     - php: hhvm
       env:
         - HHVM_VERSION=3.2.0
